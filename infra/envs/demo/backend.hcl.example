@@ -1,0 +1,3 @@
+# cp backend.hcl.example backend.hcl, then: terraform init -backend-config=backend.hcl
+bucket = "itam-tfstate-<YOUR-ACCOUNT-ID>"
+region = "ap-south-1"

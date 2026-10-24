@@ -1,0 +1,47 @@
+name: deploy
+on:
+  push:
+    branches: [main]
+    paths: ["app/**", "infra/**", "scripts/**"]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Target environment
+        type: choice
+        options: [demo, prod]
+        default: demo
+
+concurrency:
+  group: deploy-${{ github.event.inputs.environment || 'demo' }}
+  cancel-in-progress: false
+
+permissions:
+  id-token: write # GitHub OIDC -> AWS, no stored keys
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    # Push to main deploys demo. Prod is manual and waits for the reviewers configured on the `prod` GitHub Environment.
+    environment: ${{ github.event.inputs.environment || 'demo' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with: { terraform_version: 1.10.5 }
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION || 'ap-south-1' }}
+      - name: Write Terraform inputs
+        run: |
+          ENV="${{ github.event.inputs.environment || 'demo' }}"
+          cat > infra/envs/$ENV/backend.hcl <<EOT
+          bucket = "${{ vars.TF_STATE_BUCKET }}"
+          region = "${{ vars.AWS_REGION || 'ap-south-1' }}"
+          EOT
+          cat > infra/envs/$ENV/terraform.tfvars <<EOT
+          admin_email = "${{ vars.ADMIN_EMAIL }}"
+          alert_email = "${{ vars.ALERT_EMAIL }}"
+          EOT
+      - name: Deploy
+        run: scripts/deploy.sh "${{ github.event.inputs.environment || 'demo' }}" "${GITHUB_SHA::12}"

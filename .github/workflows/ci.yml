@@ -1,0 +1,81 @@
+name: ci
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  app:
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: app } }
+    services:
+      postgres:
+        image: postgres:16
+        env: { POSTGRES_USER: itam_master, POSTGRES_PASSWORD: devpass, POSTGRES_DB: itam_test }
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U itam_master" --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      DB_HOST: localhost
+      DB_PORT: "5432"
+      DB_NAME: itam_test
+      DB_USER: itam_master
+      DB_PASSWORD: devpass
+      DB_SSL: "off"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm, cache-dependency-path: app/package-lock.json }
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - name: Dependency audit (fails on high/critical)
+        run: npm audit --omit=dev --audit-level=high
+
+  image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -t itam-app:ci app
+      - uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: itam-app:ci
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+          exit-code: "1"
+
+  terraform:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with: { terraform_version: 1.10.5 }
+      - run: terraform fmt -check -recursive infra
+      - name: validate every root module
+        run: |
+          for d in infra/bootstrap infra/envs/demo infra/envs/prod; do
+            terraform -chdir="$d" init -backend=false -input=false >/dev/null
+            terraform -chdir="$d" validate
+          done
+      - uses: terraform-linters/setup-tflint@v4
+      - run: tflint --init && tflint --recursive
+        working-directory: infra
+      - uses: aquasecurity/trivy-action@0.28.0
+        with:
+          scan-type: config
+          scan-ref: infra
+          severity: CRITICAL,HIGH
+          exit-code: "1"
+
+  secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: gitleaks/gitleaks-action@v2
+        env: { GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}" }

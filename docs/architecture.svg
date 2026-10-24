@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 640" font-family="Segoe UI, Arial, sans-serif">
+<defs>
+<marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+<style>
+.b{fill:#f1f5f9;stroke:#475569;stroke-width:1.5}
+.o{fill:#fff7ed;stroke:#c2410c;stroke-width:1.5}
+.g{fill:#f0fdf4;stroke:#15803d;stroke-width:1.5}
+.p{fill:#eff6ff;stroke:#1d4ed8;stroke-width:1.5}
+.t{font-size:14px;fill:#0f172a;text-anchor:middle}
+.s{font-size:11px;fill:#475569;text-anchor:middle}
+.l{stroke:#475569;stroke-width:1.6;fill:none;marker-end:url(#a)}
+.z{fill:none;stroke:#94a3b8;stroke-dasharray:6 4;stroke-width:1.5}
+</style>
+</defs>
+<rect width="1200" height="640" fill="#ffffff"/>
+<text x="600" y="34" text-anchor="middle" font-size="22" font-weight="700" fill="#0f172a">ITAM Console v3 - AWS architecture (ap-south-1)</text>
+<rect class="z" x="360" y="60" width="800" height="470" rx="12"/>
+<text x="374" y="80" font-size="12" fill="#64748b">VPC, 2 Availability Zones</text>
+
+<rect class="b" x="20" y="260" width="120" height="60" rx="8"/><text class="t" x="80" y="287">Browser</text><text class="s" x="80" y="305">HTTPS</text>
+<rect class="o" x="180" y="260" width="140" height="60" rx="8"/><text class="t" x="250" y="287">CloudFront</text><text class="s" x="250" y="305">TLS, cloudfront.net</text>
+<rect class="o" x="150" y="100" width="190" height="60" rx="8"/><text class="t" x="245" y="127">Cognito user pool</text><text class="s" x="245" y="145">hosted UI, code + PKCE, groups = roles</text>
+
+<rect class="p" x="400" y="260" width="140" height="60" rx="8"/><text class="t" x="470" y="285">ALB</text><text class="s" x="470" y="303">accepts CloudFront only</text>
+<rect class="p" x="600" y="170" width="160" height="60" rx="8"/><text class="t" x="680" y="196">ECS Fargate: app</text><text class="s" x="680" y="214">port 8080, /healthz</text>
+<rect class="p" x="600" y="270" width="160" height="60" rx="8"/><text class="t" x="680" y="296">ECS task: migrate</text><text class="s" x="680" y="314">runs before app starts</text>
+<rect class="p" x="600" y="380" width="160" height="60" rx="8"/><text class="t" x="680" y="406">Scheduled jobs</text><text class="s" x="680" y="424">expiry-alerts, discover-aws</text>
+<rect class="o" x="830" y="385" width="120" height="50" rx="8"/><text class="t" x="890" y="415">EventBridge</text>
+
+<rect class="g" x="830" y="200" width="150" height="70" rx="8"/><text class="t" x="905" y="226">RDS PostgreSQL 16</text><text class="s" x="905" y="244">private data subnets</text><text class="s" x="905" y="258">TLS, restricted app role</text>
+<rect class="g" x="830" y="100" width="150" height="60" rx="8"/><text class="t" x="905" y="127">S3 attachments</text><text class="s" x="905" y="145">presigned upload, 10 MB</text>
+
+<rect class="b" x="1000" y="385" width="130" height="50" rx="8"/><text class="t" x="1065" y="408">SNS to email</text><text class="s" x="1065" y="424">alarms + expiry alerts</text>
+<rect class="b" x="400" y="460" width="150" height="50" rx="8"/><text class="t" x="475" y="482">CloudWatch</text><text class="s" x="475" y="498">logs, alarms, dashboard</text>
+<rect class="b" x="600" y="460" width="160" height="50" rx="8"/><text class="t" x="680" y="482">Secrets Manager + ECR</text><text class="s" x="680" y="498">DB secrets, app image</text>
+
+<path class="l" d="M140,290 L180,290"/>
+<path class="l" d="M320,290 L400,290"/>
+<path class="l" d="M540,290 L600,215"/>
+<path class="l" d="M760,200 L830,225"/>
+<path class="l" d="M760,300 L830,255"/>
+<path class="l" d="M760,185 L830,140"/>
+<path class="l" d="M250,260 L245,160"/>
+<path class="l" d="M830,410 L760,410"/>
+<text x="600" y="590" text-anchor="middle" font-size="12" fill="#64748b">Terraform modules: network, edge, data, auth, compute, jobs, observability, alerts.</text>
+<text x="600" y="610" text-anchor="middle" font-size="12" fill="#64748b">Delivered by scripts/deploy.sh or GitHub Actions (OIDC, no stored AWS keys).</text>
+</svg>

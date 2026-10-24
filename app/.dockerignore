@@ -1,0 +1,10 @@
+node_modules
+.output
+.tanstack
+.git
+.env
+.env.*
+!.env.local.example
+*.log
+tests
+coverage

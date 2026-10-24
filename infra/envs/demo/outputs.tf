@@ -1,0 +1,16 @@
+output "app_url" { value = module.stack.app_url }
+output "ecr_repository_url" { value = module.stack.ecr_repository_url }
+output "ecr_repository_name" { value = module.stack.ecr_repository_name }
+output "cluster_name" { value = module.stack.cluster_name }
+output "service_name" { value = module.stack.service_name }
+output "migrate_family" { value = module.stack.migrate_family }
+output "desired_count" { value = module.stack.desired_count }
+output "run_task_network" { value = module.stack.run_task_network }
+output "user_pool_id" { value = module.stack.user_pool_id }
+output "cognito_domain" { value = module.stack.cognito_domain }
+output "bucket_name" { value = module.stack.bucket_name }
+output "db_identifier" { value = module.stack.db_identifier }
+output "alert_topic_arn" { value = module.stack.alert_topic_arn }
+output "dashboard_name" { value = module.stack.dashboard_name }
+output "log_group_app" { value = module.stack.log_group_app }
+output "nat_public_ips" { value = module.stack.nat_public_ips }
