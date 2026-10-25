@@ -28,6 +28,18 @@
 | Observability | CloudWatch Logs, alarms, dashboard, SNS |
 | IaC / CI | Terraform >= 1.10, tflint, GitHub Actions (OIDC), Docker |
 
+## Documentation
+
+| Document | For |
+|---|---|
+| [Project documentation](docs/PROJECT-DOCUMENTATION.md) | Full explanation: what it does, how it works, how it was built, how to deploy and operate it |
+| [User guide](docs/USER-GUIDE.md) | Everyday users of the application |
+| [Architecture](docs/ARCHITECTURE.md) | Request path, network, roles, data |
+| [Security](docs/SECURITY.md) | Security decisions |
+| [Runbook](docs/RUNBOOK.md) | Deploy, roll back, logs, backups, failure table |
+| [Troubleshooting log](docs/TROUBLESHOOTING.md) | Real problems from the first AWS deployment |
+| [Portfolio kit](docs/PORTFOLIO.md) | Pitch, demo script, resume bullets, interview Q&A |
+
 ## Repository layout
 
 ```
