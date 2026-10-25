@@ -4,7 +4,7 @@
 
 ![Architecture](docs/architecture.png)
 
-> **Status:** application, tests and Terraform are verified (see [Verification](#verification)). Live AWS evidence is listed in [Screenshots](#screenshots) once captured.
+> **Status:** deployed and verified on AWS (ap-south-1): Cognito sign-in, dashboard, assets, tickets, licenses and audit log all work on the live CloudFront URL. See [Screenshots](#screenshots) and [Verification](#verification). The demo stack is destroyed after presentations to avoid charges, so the URL may be offline.
 
 ## Highlights
 
@@ -104,17 +104,53 @@ Not covered by automated checks: a real Cognito sign-in, browser S3 upload, Clou
 
 ## Screenshots
 
-Add real captures to `docs/screenshots/` using the names in [CAPTURE-CHECKLIST.md](docs/screenshots/CAPTURE-CHECKLIST.md), then uncomment:
+### Application (live on the AWS CloudFront URL)
 
-<!--
 | Dashboard | Assets |
 |---|---|
-| ![Dashboard](docs/screenshots/02-dashboard.png) | ![Assets](docs/screenshots/03-assets.png) |
+| ![Dashboard](docs/screenshots/02-live-dashboard.png) | ![Assets](docs/screenshots/04-live-assets.png) |
 
-| ECS service | CloudWatch dashboard |
+| Tickets | Licenses |
 |---|---|
-| ![ECS](docs/screenshots/11-ecs-service.png) | ![CloudWatch](docs/screenshots/14-cloudwatch-dashboard.png) |
--->
+| ![Tickets](docs/screenshots/05-live-tickets.png) | ![Licenses](docs/screenshots/06-live-licenses.png) |
+
+| Audit log (every change recorded) | Cognito-protected sign-in |
+|---|---|
+| ![Audit log](docs/screenshots/07-live-audit-log.png) | ![Sign-in](docs/screenshots/08-live-signin.png) |
+
+### AWS infrastructure (ap-south-1)
+
+| ECS Fargate service (1/1 running) | Application Load Balancer |
+|---|---|
+| ![ECS](docs/screenshots/10-ecs-service.png) | ![ALB](docs/screenshots/11-alb-details.png) |
+
+| ALB security group (CloudFront only) | CloudFront distribution |
+|---|---|
+| ![ALB SG](docs/screenshots/12-alb-security-group.png) | ![CloudFront](docs/screenshots/13-cloudfront-distribution.png) |
+
+| RDS PostgreSQL 16 | VPC resource map |
+|---|---|
+| ![RDS](docs/screenshots/14-rds-instance.png) | ![VPC](docs/screenshots/15-vpc-resource-map.png) |
+
+| Cognito user pool | S3 attachment upload |
+|---|---|
+| ![Cognito](docs/screenshots/16-cognito-user-pool.png) | ![S3](docs/screenshots/17-s3-attachment-pdf.png) |
+
+| Terraform remote state in S3 | SNS alert subscription confirmed |
+|---|---|
+| ![State](docs/screenshots/18-s3-terraform-state.png) | ![SNS](docs/screenshots/19-sns-subscription-confirmed.png) |
+
+### Delivery and tests
+
+| `terraform apply` complete | Deploy health check passed |
+|---|---|
+| ![Apply](docs/screenshots/21-terraform-apply-complete.png) | ![Smoke test](docs/screenshots/22-deploy-smoke-test-healthy.png) |
+
+| 43 tests passing |
+|---|
+| ![Tests](docs/screenshots/01-tests-passing.png) |
+
+Real deployment problems and how they were fixed: [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md).
 
 ## Cost and cleanup
 

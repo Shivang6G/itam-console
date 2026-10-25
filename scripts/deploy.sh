@@ -12,6 +12,7 @@ set -euo pipefail
 ENV="${1:?usage: deploy.sh <demo|prod> [tag]}"
 TAG="${2:-$(git rev-parse --short=12 HEAD)}"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+command -v cygpath >/dev/null 2>&1 && ROOT="$(cygpath -m "$ROOT")"
 TF="$ROOT/infra/envs/$ENV"
 REGION="${AWS_REGION:-ap-south-1}"
 SERVICE_ENABLED="${SERVICE_ENABLED:-true}"

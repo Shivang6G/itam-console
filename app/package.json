@@ -3,7 +3,9 @@
   "version": "3.0.0",
   "private": true,
   "type": "module",
-  "engines": { "node": ">=22" },
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "dev": "node --env-file-if-exists=.env.local ./node_modules/vite/bin/vite.js dev",
     "build": "vite build && node scripts/build-worker.mjs",
@@ -27,7 +29,7 @@
     "@tanstack/react-start": "^1.168.26",
     "aws-jwt-verify": "^4.0.1",
     "clsx": "^2.1.1",
-    "drizzle-orm": "^0.44.0",
+    "drizzle-orm": "^0.45.4",
     "lucide-react": "^0.575.0",
     "pg": "^8.13.0",
     "pino": "^9.5.0",
@@ -51,9 +53,9 @@
     "eslint": "^9.32.0",
     "globals": "^15.15.0",
     "nitro": "3.0.260603-beta",
+    "tsx": "^4.19.0",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.56.1",
-    "tsx": "^4.19.0",
     "vite": "^8.0.16",
     "vitest": "^3.2.0"
   }

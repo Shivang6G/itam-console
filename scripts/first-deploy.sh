@@ -4,6 +4,7 @@
 set -euo pipefail
 ENV="${1:?usage: first-deploy.sh <demo|prod>}"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+command -v cygpath >/dev/null 2>&1 && ROOT="$(cygpath -m "$ROOT")"
 REGION="${AWS_REGION:-ap-south-1}"
 
 [ -f "$ROOT/infra/envs/$ENV/backend.hcl" ]      || { echo "create infra/envs/$ENV/backend.hcl (see backend.hcl.example)"; exit 1; }
