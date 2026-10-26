@@ -331,7 +331,7 @@ Full procedures and failure table: [RUNBOOK.md](RUNBOOK.md).
 
 | Workflow | Trigger | Does |
 |---|---|---|
-| `ci` | push to main, pull request | lint, typecheck, build, tests with PostgreSQL, `npm audit` (critical), image build and Trivy scan, `terraform fmt/validate`, tflint, Terraform Trivy scan (report only), gitleaks |
+| `ci` | push to main, pull request | lint, typecheck, build, tests with PostgreSQL, `npm audit` (critical), image build and Trivy scan (reports HIGH, gates on CRITICAL), `terraform fmt/validate`, tflint, Terraform Trivy scan (report only), gitleaks |
 | `plan` | pull request | `terraform plan` using the read-only role |
 | `deploy` | manual | build, push, migrate and roll out through the `demo` or `prod` GitHub Environment |
 

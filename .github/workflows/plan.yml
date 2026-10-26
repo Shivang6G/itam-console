@@ -16,7 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: hashicorp/setup-terraform@v3
-        with: { terraform_version: 1.10.5 }
+        with: { terraform_version: 1.16.6 }
       - uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ vars.AWS_PLAN_ROLE_ARN }}
@@ -31,7 +31,7 @@ jobs:
           terraform init -input=false -backend-config=backend.hcl
           terraform plan -input=false -lock=false -no-color \
             -var admin_email="${{ vars.ADMIN_EMAIL }}" -var alert_email="${{ vars.ALERT_EMAIL }}" \
-            -var image_tag="$(../../../scripts/current-image-tag.sh ${{ matrix.env }} 2>/dev/null || echo bootstrap)" | tee plan.txt
+            -var image_tag="$(bash ../../../scripts/current-image-tag.sh ${{ matrix.env }} 2>/dev/null || echo bootstrap)" | tee plan.txt
       - uses: marocchino/sticky-pull-request-comment@v2
         with:
           header: plan-${{ matrix.env }}

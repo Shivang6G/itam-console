@@ -20,12 +20,24 @@ permissions:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    # Push to main deploys demo. Prod is manual and waits for the reviewers configured on the `prod` GitHub Environment.
+    # Manual run. Prod waits for the reviewers configured on the `prod` GitHub Environment.
     environment: ${{ github.event.inputs.environment || 'demo' }}
     steps:
       - uses: actions/checkout@v4
+      - name: Check required repository variables
+        env:
+          AWS_DEPLOY_ROLE_ARN: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          TF_STATE_BUCKET: ${{ vars.TF_STATE_BUCKET }}
+          ADMIN_EMAIL: ${{ vars.ADMIN_EMAIL }}
+          ALERT_EMAIL: ${{ vars.ALERT_EMAIL }}
+        run: |
+          missing=0
+          for v in AWS_DEPLOY_ROLE_ARN TF_STATE_BUCKET ADMIN_EMAIL ALERT_EMAIL; do
+            if [ -z "${!v}" ]; then echo "::error::Repository variable $v is not set (Settings > Secrets and variables > Actions > Variables)"; missing=1; fi
+          done
+          exit $missing
       - uses: hashicorp/setup-terraform@v3
-        with: { terraform_version: 1.10.5 }
+        with: { terraform_version: 1.16.6 } # must be >= the version that wrote the state (local runs used 1.16.6)
       - uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
@@ -42,4 +54,4 @@ jobs:
           alert_email = "${{ vars.ALERT_EMAIL }}"
           EOT
       - name: Deploy
-        run: scripts/deploy.sh "${{ github.event.inputs.environment || 'demo' }}" "${GITHUB_SHA::12}"
+        run: bash scripts/deploy.sh "${{ github.event.inputs.environment || 'demo' }}" "${GITHUB_SHA::12}"
